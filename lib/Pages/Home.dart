@@ -3,6 +3,7 @@ import 'package:music_app/Model/Post.dart';
 import 'package:music_app/View_model/List_of_view_mode.dart';
 import 'package:music_app/View_model/ProviderData.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {
@@ -30,34 +31,56 @@ class HomeView extends StatelessWidget {
         title: Text(' اخبارى '),
       ),
       body: ListView.builder(
-        itemCount: 2, // p.length,
+        itemCount: p.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(12),
-            child: Container(
+            child: GestureDetector(
+              onTap: () async {
+                await launch(p[index].url);
+              },
+              child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                       20,
                     ),
                     color: Colors.brown[200]),
                 height: screenHeigt * .3,
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("{p[index].title}"),
+                    Container(
+                      height: screenHeigt * .3,
+                      width: screenWidth * .5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "${p[index].title}",
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage("${p[index].urlToImage}"),
+                            fit: BoxFit.fill,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            20,
+                          )),
+                      height: screenHeigt * .28,
+                      width: screenWidth * .4,
+                      // child: Image(
+                      //   image: NetworkImage("${p[index].urlToImage}"),
+                      //   fit: BoxFit.fill,
+                      // ),
+                    ),
                   ],
-                )),
+                ),
+              ),
+            ),
           );
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "حسابى"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: 'اخر الاخبار '),
-        ],
-        currentIndex: currentIndex.currentIndex,
-        onTap: (index) {
-          currentIndex.changeIndex(index);
         },
       ),
     );
